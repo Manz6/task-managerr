@@ -121,7 +121,6 @@ task-manager/
 │   ├── tests/
 │   │   ├── taskController.test.js
 │   │   └── taskRoutes.test.js
-│   ├── jest.config.js
 │   ├── package.json
 │   └── server.js              # Express server entry point
 │
