@@ -8,4 +8,5 @@ export const getTasks = () => API.get("/");
 export const createTask = (task) => API.post("/", task);
 export const updateTask = (id, data) =>
   API.patch(`/${id}`, data);
+export const deleteTask = (id) => API.delete(`/${id}`);
 export const getTaskStats = () => API.get("/stats");

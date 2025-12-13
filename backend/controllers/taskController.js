@@ -19,6 +19,11 @@ exports.updateTask = async (req, res) => {
   res.json(task);
 };
 
+exports.deleteTask = async (req, res) => {
+  const task = await Task.findByIdAndDelete(req.params.id);
+  res.json({ message: "Task deleted successfully", task });
+};
+
 exports.getTaskStats = async (req, res) => {
   try {
     const now = new Date();

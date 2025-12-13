@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { updateTask } from "../services/api";
+import { updateTask, deleteTask } from "../services/api";
 
 export default function TaskItem({ task, refresh }) {
   const [isUpdating, setIsUpdating] = useState(false);
@@ -23,6 +23,18 @@ export default function TaskItem({ task, refresh }) {
       refresh();
     } catch (error) {
       console.error("Error updating task:", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setIsUpdating(true);
+    try {
+      await deleteTask(task._id);
+      refresh();
+    } catch (error) {
+      console.error("Error deleting task:", error);
     } finally {
       setIsUpdating(false);
     }
@@ -77,6 +89,14 @@ export default function TaskItem({ task, refresh }) {
           <option value="In Progress">In Progress</option>
           <option value="Done">Done</option>
         </select>
+        <button
+          className="delete-btn"
+          onClick={handleDelete}
+          disabled={isUpdating}
+          title="Delete task"
+        >
+          ×
+        </button>
       </div>
     </div>
   );

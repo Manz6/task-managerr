@@ -4,7 +4,7 @@ import TaskItem from "./TaskItem";
 import TaskSearch from "./TaskSearch";
 import TaskFilters from "./TaskFilters";
 
-export default function TaskList({ refreshKey, onTaskUpdate }) {
+export default function TaskList({ onTaskUpdate, refreshKey }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,12 +34,6 @@ export default function TaskList({ refreshKey, onTaskUpdate }) {
 
   useEffect(() => {
     loadTasks();
-  }, []);
-
-  useEffect(() => {
-    if (refreshKey > 0) {
-      loadTasks();
-    }
   }, [refreshKey]);
 
   // Filter and search tasks

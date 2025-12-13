@@ -24,13 +24,13 @@ function App() {
       <section className="hero-section">
         <div className="hero-content">
           <div className="hero-text">
-            <h1 className="hero-title">Task360</h1>
+            <h1 className="hero-title">Task Manager</h1>
             <p className="hero-subtitle">
-              Complete task management from every angle.
+              A simple, elegant way to organize your tasks and stay productive.
             </p>
             <p className="hero-description">
-              Your all-in-one solution for managing tasks with a comprehensive view. 
-              Track, organize, and complete everything in one seamless platform.
+              Create tasks, set reminders, track progress, and never miss a deadline. 
+              Our intuitive interface helps you focus on what matters most.
             </p>
             <div className="hero-features">
               <div className="feature-item">
@@ -69,9 +69,9 @@ function App() {
       {/* Task Management Section */}
       <section id="task-section" className="task-section">
         <div className="section-header">
-          <h2 className="section-title">Your Workspace</h2>
+          <h2 className="section-title">Manage Your Tasks</h2>
           <p className="section-description">
-            Everything you need to stay organized and productive
+            Create, organize, and track your tasks with ease
           </p>
         </div>
 
