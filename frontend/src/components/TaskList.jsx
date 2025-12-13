@@ -1,16 +1,32 @@
 import { useEffect, useState } from "react";
 import { getTasks } from "../services/api";
 import TaskItem from "./TaskItem";
+import TaskFilters from "./TaskFilters";
 
-export default function TaskList() {
+export default function TaskList({ onStatsUpdate }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    search: "",
+    status: undefined,
+    dueDate: undefined,
+  });
 
   const loadTasks = async () => {
     try {
       setLoading(true);
-      const res = await getTasks();
+      const params = {};
+      if (filters.search) params.search = filters.search;
+      if (filters.status) params.status = filters.status;
+      if (filters.dueDate) params.dueDate = filters.dueDate;
+
+      const res = await getTasks(params);
       setTasks(res.data);
+      
+      // Notify parent to refresh stats
+      if (onStatsUpdate) {
+        onStatsUpdate();
+      }
     } catch (error) {
       console.error("Error loading tasks:", error);
     } finally {
@@ -20,26 +36,12 @@ export default function TaskList() {
 
   useEffect(() => {
     loadTasks();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters]);
 
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading tasks...</p>
-      </div>
-    );
-  }
-
-  if (tasks.length === 0) {
-    return (
-      <div className="empty-state">
-        <div className="empty-icon">📋</div>
-        <h3>No tasks yet</h3>
-        <p>Create your first task to get started!</p>
-      </div>
-    );
-  }
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
 
   // Group tasks by status
   const tasksByStatus = {
@@ -50,21 +52,40 @@ export default function TaskList() {
 
   return (
     <div className="task-list-container">
-      {Object.entries(tasksByStatus).map(([status, statusTasks]) => 
-        statusTasks.length > 0 && (
-          <div key={status} className="status-group">
-            <h3 className="status-title">
-              <span className={`status-badge status-${status.replace(" ", "-").toLowerCase()}`}>
-                {status}
-              </span>
-              <span className="status-count">({statusTasks.length})</span>
-            </h3>
-            <div className="tasks-grid">
-              {statusTasks.map((task) => (
-                <TaskItem key={task._id} task={task} refresh={loadTasks} />
-              ))}
+      <TaskFilters filters={filters} onFilterChange={handleFilterChange} />
+      
+      {loading ? (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading tasks...</p>
+        </div>
+      ) : tasks.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-icon">📋</div>
+          <h3>No tasks found</h3>
+          <p>
+            {filters.search || filters.status || filters.dueDate
+              ? "Try adjusting your filters"
+              : "Create your first task to get started!"}
+          </p>
+        </div>
+      ) : (
+        Object.entries(tasksByStatus).map(([status, statusTasks]) => 
+          statusTasks.length > 0 && (
+            <div key={status} className="status-group">
+              <h3 className="status-title">
+                <span className={`status-badge status-${status.replace(" ", "-").toLowerCase()}`}>
+                  {status}
+                </span>
+                <span className="status-count">({statusTasks.length})</span>
+              </h3>
+              <div className="tasks-grid">
+                {statusTasks.map((task) => (
+                  <TaskItem key={task._id} task={task} refresh={loadTasks} />
+                ))}
+              </div>
             </div>
-          </div>
+          )
         )
       )}
     </div>
