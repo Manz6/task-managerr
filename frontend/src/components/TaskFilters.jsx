@@ -1,76 +1,41 @@
-import { useState } from "react";
-
-export default function TaskFilters({ onFilterChange, filters }) {
-  const [searchTerm, setSearchTerm] = useState(filters.search || "");
-  const [statusFilter, setStatusFilter] = useState(filters.status || "");
-  const [dueDateFilter, setDueDateFilter] = useState(filters.dueDate || "");
-
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    onFilterChange({ ...filters, search: value });
-  };
-
+export default function TaskFilters({ filters, onFilterChange }) {
   const handleStatusChange = (e) => {
-    const value = e.target.value;
-    setStatusFilter(value);
-    onFilterChange({ ...filters, status: value || undefined });
+    onFilterChange({ ...filters, status: e.target.value });
   };
 
-  const handleDueDateChange = (e) => {
-    const value = e.target.value;
-    setDueDateFilter(value);
-    onFilterChange({ ...filters, dueDate: value || undefined });
+  const handleDueDateFilterChange = (e) => {
+    onFilterChange({ ...filters, dueDateFilter: e.target.value });
   };
 
   const clearFilters = () => {
-    setSearchTerm("");
-    setStatusFilter("");
-    setDueDateFilter("");
-    onFilterChange({ search: "", status: undefined, dueDate: undefined });
+    onFilterChange({ status: "All", dueDateFilter: "All" });
   };
 
-  const hasActiveFilters = statusFilter || dueDateFilter || searchTerm;
+  const hasActiveFilters = filters.status !== "All" || filters.dueDateFilter !== "All";
 
   return (
-    <div className="task-filters">
+    <div className="filters-container">
       <div className="filters-header">
-        <h3 className="filters-title">Search & Filter</h3>
+        <h4 className="filters-title">Filters</h4>
         {hasActiveFilters && (
           <button className="clear-filters-btn" onClick={clearFilters}>
             Clear All
           </button>
         )}
       </div>
-
+      
       <div className="filters-grid">
         <div className="filter-group">
-          <label htmlFor="search" className="filter-label">
-            <span className="filter-icon">🔍</span>
-            Search Tasks
-          </label>
-          <input
-            id="search"
-            type="text"
-            className="filter-input"
-            placeholder="Search by title or description..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        </div>
-
-        <div className="filter-group">
-          <label htmlFor="status" className="filter-label">
-            <span className="filter-icon">📊</span>
-            Filter by Status
+          <label htmlFor="status-filter" className="filter-label">
+            Status
           </label>
           <select
-            id="status"
+            id="status-filter"
             className="filter-select"
-            value={statusFilter}
+            value={filters.status}
             onChange={handleStatusChange}
           >
-            <option value="">All Statuses</option>
+            <option value="All">All Statuses</option>
             <option value="To Do">To Do</option>
             <option value="In Progress">In Progress</option>
             <option value="Done">Done</option>
@@ -78,17 +43,21 @@ export default function TaskFilters({ onFilterChange, filters }) {
         </div>
 
         <div className="filter-group">
-          <label htmlFor="dueDate" className="filter-label">
-            <span className="filter-icon">📅</span>
-            Filter by Due Date
+          <label htmlFor="due-date-filter" className="filter-label">
+            Due Date
           </label>
-          <input
-            id="dueDate"
-            type="date"
-            className="filter-input"
-            value={dueDateFilter}
-            onChange={handleDueDateChange}
-          />
+          <select
+            id="due-date-filter"
+            className="filter-select"
+            value={filters.dueDateFilter}
+            onChange={handleDueDateFilterChange}
+          >
+            <option value="All">All Dates</option>
+            <option value="Overdue">Overdue</option>
+            <option value="Due Soon">Due Soon (≤2 days)</option>
+            <option value="Upcoming">Upcoming</option>
+            <option value="No Date">No Due Date</option>
+          </select>
         </div>
       </div>
     </div>
