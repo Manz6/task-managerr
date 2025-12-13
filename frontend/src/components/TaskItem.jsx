@@ -1,33 +1,83 @@
+import { useState } from "react";
 import { updateTask } from "../services/api";
 
 export default function TaskItem({ task, refresh }) {
+  const [isUpdating, setIsUpdating] = useState(false);
   const now = new Date();
-  const due = new Date(task.dueDate);
+  const due = task.dueDate ? new Date(task.dueDate) : null;
 
-  let bgColor = "#e8e8e8";
+  const getDueDateStatus = () => {
+    if (!due || task.status === "Done") return "normal";
+    if (due < now) return "overdue";
+    const daysUntilDue = (due - now) / (1000 * 60 * 60 * 24);
+    if (daysUntilDue <= 2) return "soon";
+    return "normal";
+  };
 
-  if (task.status !== "Done") {
-    if (due < now) bgColor = "#ffcccc"; // overdue
-    else if ((due - now) / (1000 * 60 * 60 * 24) <= 2)
-      bgColor = "#fff3cd"; // soon due
-  }
+  const dueDateStatus = getDueDateStatus();
 
   const changeStatus = async (e) => {
-    await updateTask(task._id, { status: e.target.value });
-    refresh();
+    setIsUpdating(true);
+    try {
+      await updateTask(task._id, { status: e.target.value });
+      refresh();
+    } catch (error) {
+      console.error("Error updating task:", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "No due date";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", { 
+      month: "short", 
+      day: "numeric", 
+      year: "numeric" 
+    });
   };
 
   return (
-    <div style={{ background: bgColor, padding: "10px", margin: "10px 0" }}>
-      <h4>{task.title}</h4>
-      <p>{task.description}</p>
-      <p>Due: {task.dueDate?.slice(0, 10)}</p>
+    <div className={`task-card task-${dueDateStatus} task-status-${task.status?.replace(" ", "-").toLowerCase()}`}>
+      <div className="task-header">
+        <h3 className="task-title">{task.title}</h3>
+        {task.reminder && (
+          <span className="reminder-badge" title="Reminder set">🔔</span>
+        )}
+      </div>
+      
+      {task.description && (
+        <p className="task-description">{task.description}</p>
+      )}
 
-      <select value={task.status} onChange={changeStatus}>
-        <option>To Do</option>
-        <option>In Progress</option>
-        <option>Done</option>
-      </select>
+      <div className="task-footer">
+        <div className="task-meta">
+          {due && (
+            <div className={`due-date due-${dueDateStatus}`}>
+              <span className="due-icon">📅</span>
+              <span className="due-text">{formatDate(task.dueDate)}</span>
+              {dueDateStatus === "overdue" && (
+                <span className="overdue-label">Overdue</span>
+              )}
+              {dueDateStatus === "soon" && (
+                <span className="soon-label">Due Soon</span>
+              )}
+            </div>
+          )}
+        </div>
+
+        <select 
+          className="status-select"
+          value={task.status || "To Do"} 
+          onChange={changeStatus}
+          disabled={isUpdating}
+        >
+          <option value="To Do">To Do</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Done">Done</option>
+        </select>
+      </div>
     </div>
   );
 }
