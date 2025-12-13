@@ -55,11 +55,6 @@ A modern, full-stack task management application built with **Node.js/Express** 
    PORT=5000
    ```
 
-4. **Verify installation:**
-   ```bash
-   npm test
-   ```
-
 ### Frontend Setup
 
 1. **Navigate to the frontend directory:**
@@ -82,11 +77,6 @@ A modern, full-stack task management application built with **Node.js/Express** 
    ```
    
    The server will start on `http://localhost:5000`
-
-2. **To run tests:**
-   ```bash
-   npm test
-   ```
 
 ### Start the Frontend
 
@@ -164,17 +154,9 @@ task-manager/
 4. **No Task Attachments** - Cannot attach files to tasks
 5. **No Recurring Tasks** - Cannot set up recurring or recurring task patterns
 
-### Browser Compatibility
-- Works best on Chrome, Firefox, Safari, and Edge
-- Limited support for Internet Explorer
-
-### Performance Considerations
-- Application may slow down with 1000+ tasks due to in-memory filtering
-- No pagination implemented; all tasks loaded at once
-
 ##  AI Tools Used
 
-### GitHub Copilot and cursor
+### GitHub Copilot and Cursor
 **Usage:** Code generation, debugging, and implementation of features
 
 #### Sample Prompts:
@@ -207,11 +189,11 @@ task-manager/
    Use React hooks for state management."
    ```
 
-5. **Styling Task Cards:**
+5. **Prompt assistance:**
    ```
-   "Create CSS styles for task cards that show different colors for overdue 
-   tasks (red), soon due tasks (orange), and completed tasks (green). 
-   Include hover effects and smooth transitions."
+   "Can you structure the requirments in simple terms on what is needed for the Problem Statement-task manager"
+
+You are required to build a Task Management App."
    ```
 
 
