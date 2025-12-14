@@ -24,7 +24,7 @@ function App() {
       <section className="hero-section">
         <div className="hero-content">
           <div className="hero-text">
-            <h1 className="hero-title">Task Manager</h1>
+            <h1 className="hero-title">Task360</h1>
             <p className="hero-subtitle">
               A simple, elegant way to organize your tasks and stay productive.
             </p>
